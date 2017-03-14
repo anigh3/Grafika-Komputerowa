@@ -39,9 +39,10 @@ GLfloat windowHeight;
 
 void drawShape()
 {
+	//kolor wielokata
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glLineWidth(2.0);
-
+	//wierzcholki 
 	glBegin(GL_POLYGON);
 	glVertex2f(x1,y1);
 	glVertex2f(x2, y2);
@@ -63,7 +64,7 @@ void RenderScene(void) {
 }
 
 void TimerFunction(int value) {
-
+	
 	glRotated(2, 0, 0, 1);
 	glutPostRedisplay();
 	glutTimerFunc(100, TimerFunction, 1);
@@ -72,6 +73,7 @@ void TimerFunction(int value) {
 
 
 void SetupRC(void) {
+	//kolor tla
 	glClearColor(0.6f, 0.4f, 0.12f, 1.0f);
 }
 
@@ -84,7 +86,7 @@ void ChangeSize(int w, int h) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
+	//obracanie wokol osi
 	aspectRatio = (GLfloat)w / (GLfloat)h;
 	if (w <= h)   
 	glOrtho(-200.0, 100.0, -100 / aspectRatio, 100.0 / aspectRatio, 1.0, -1.0);
