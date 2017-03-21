@@ -1,0 +1,6 @@
+﻿  stdafx.cpp
+  ConsoleApplication6.cpp
+c:\users\dom\documents\visual studio 2015\projects\consoleapplication6\consoleapplication6\consoleapplication6.cpp(90): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\dom\documents\visual studio 2015\projects\consoleapplication6\consoleapplication6\consoleapplication6.cpp(92): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+  ConsoleApplication6.vcxproj -> c:\users\dom\documents\visual studio 2015\Projects\ConsoleApplication6\Debug\ConsoleApplication6.exe
+  ConsoleApplication6.vcxproj -> c:\users\dom\documents\visual studio 2015\Projects\ConsoleApplication6\Debug\ConsoleApplication6.pdb (Full PDB)
