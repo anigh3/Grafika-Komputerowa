@@ -45,7 +45,7 @@ void SetupRC()
 	};
 	// Wartoci i wspó³rzdne œwiat³a
 	GLfloat whiteLight[] = { 0.05f, 0.05f, 0.05f, 1.0f };
-	GLfloat sourceLight[] = { 0.25f, 0.25f, 0.25f, 1.0f };
+	GLfloat sourceLight[] = { 0.25f, -0.25f, 0.25f, 1.0f };
 	GLfloat lightPos[] = { -10.f, 5.0f, 5.0f, 1.0f };
 	glEnable(GL_DEPTH_TEST); // Usuwanie ukrytych powierzchni
 	glEnable(GL_CULL_FACE); // Nie bdziemy prowadzi oblicze wntrza samolotu

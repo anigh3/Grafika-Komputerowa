@@ -1,0 +1,8 @@
+﻿  targa.cpp
+c:\users\admin\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\targa.cpp(6): warning C4603: '_CRT_SECURE_NO_WARNINGS': macro is not defined or definition is different after precompiled header use
+  c:\users\admin\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\targa.cpp(6): note: Add macro to precompiled header instead of defining here
+  c:\users\admin\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\targa.cpp(7): note: use of precompiled header
+c:\users\admin\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\targa.cpp(46): error C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+c:\users\admin\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\targa.cpp(126): error C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
