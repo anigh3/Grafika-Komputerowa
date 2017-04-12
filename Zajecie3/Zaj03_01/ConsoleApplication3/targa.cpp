@@ -3,7 +3,7 @@
 http://www.januszg.hg.pl
 JanuszG@enter.net.pl
 */
-
+#include "stdafx.h"
 #include <Windows.h>
 #include "targa.h"
 #include "glext.h"

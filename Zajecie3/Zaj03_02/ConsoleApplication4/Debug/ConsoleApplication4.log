@@ -1,9 +1,11 @@
-﻿  ConsoleApplication4.cpp
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(866): warning C4305: '+=': truncation from 'double' to 'GLfloat'
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(875): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(969): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(973): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(977): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\49782\documents\visual studio 2015\projects\consoleapplication4\consoleapplication4\consoleapplication4.cpp(981): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-  ConsoleApplication4.vcxproj -> c:\users\49782\documents\visual studio 2015\Projects\ConsoleApplication4\Debug\ConsoleApplication4.exe
-  ConsoleApplication4.vcxproj -> c:\users\49782\documents\visual studio 2015\Projects\ConsoleApplication4\Debug\ConsoleApplication4.pdb (Full PDB)
+﻿  stdafx.cpp
+  ConsoleApplication4.cpp
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(866): warning C4305: '+=': truncation from 'double' to 'GLfloat'
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(875): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(969): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(973): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(977): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie3\zaj03_02\consoleapplication4\consoleapplication4.cpp(981): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+  LINK : C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie3\Zaj03_02\Debug\ConsoleApplication4.exe not found or not built by the last incremental link; performing full link
+  ConsoleApplication4.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie3\Zaj03_02\Debug\ConsoleApplication4.exe
+  ConsoleApplication4.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie3\Zaj03_02\Debug\ConsoleApplication4.pdb (Full PDB)

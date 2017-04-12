@@ -1,7 +1,2 @@
-﻿  Source.cpp
-c:\users\dom\documents\visual studio 2015\projects\zajecie02_2\zajecie02_2\source.cpp(148): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\dom\documents\visual studio 2015\projects\zajecie02_2\zajecie02_2\source.cpp(150): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\dom\documents\visual studio 2015\projects\zajecie02_2\zajecie02_2\source.cpp(192): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\dom\documents\visual studio 2015\projects\zajecie02_2\zajecie02_2\source.cpp(194): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-  Zajecie02_2.vcxproj -> c:\users\dom\documents\visual studio 2015\Projects\Zajecie02_2\Debug\Zajecie02_2.exe
-  Zajecie02_2.vcxproj -> c:\users\dom\documents\visual studio 2015\Projects\Zajecie02_2\Debug\Zajecie02_2.pdb (Partial PDB)
+﻿  Zajecie02_2.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_2\Debug\Zajecie02_2.exe
+  Zajecie02_2.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_2\Debug\Zajecie02_2.pdb (Partial PDB)

@@ -126,7 +126,7 @@ int normals = NORMALS_FLAT;
 
 // współrzędne wierzchołków dwudziestościanu
 
-GLfloat vertex[12 * 3] =
+GLfloat vertex[11 * 3] =
 {
 	
 	0.0f, 1.0f, 0.0f,

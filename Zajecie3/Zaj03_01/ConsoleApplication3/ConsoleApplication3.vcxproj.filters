@@ -41,7 +41,7 @@
     <ClCompile Include="ConsoleApplication3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\49782\Downloads\targa.cpp">
+    <ClCompile Include="targa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

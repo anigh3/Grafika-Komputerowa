@@ -1,75 +1,30 @@
-﻿
-// opengl_tekstura_2d.cpp : Defines the entry point for the console application.
-
-//
-
-#include "stdafx.h"
-
-
-
-/*
-
-(c) Janusz Ganczarski
-
-http://www.januszg.hg.pl
-
-JanuszG@enter.net.pl
-
-*/
-
+﻿#include "stdafx.h"
 
 #include <GL/glut.h>
-
-#include "glext.h"
-
-#ifndef WIN32
-
-#define GLX_GLXEXT_LEGACY
-
-#include <GL/glx.h>
-
-#define wglGetProcAddress glXGetProcAddressARB
-
-#endif
-
-
 
 #include <stdlib.h>
 
 #include <stdio.h>
 
-#include "colors.h"
-
-#include "targa.h"
-
-#include <GLFW/glfw3.h>
+#include "glext.h"
 
 
-
-// wskaŸnik na funkcję glWindowPos2i
-
-
-PFNGLWINDOWPOS2IPROC glWindowPos2i = NULL;
-
-
-// stałe do obsługi menu podręcznego
+// stacja do obsługi menu podręczznego
 
 
 enum
 
 {
 
-	VENUS_TEX,      // Wenus
+	MAG_FILTER,     // filtr powiększający
 
-	EARTH_TEX,      // Ziemia
-
-	MARS_TEX,       // Mars
+	MIN_FILTER,     // filtr pomniejszający
 
 	FULL_WINDOW,    // aspekt obrazu - całe okno
 
 	ASPECT_1_1,     // aspekt obrazu 1:1
 
-	EXIT            // wyjście
+	EXIT            // wyjśie
 
 };
 
@@ -112,73 +67,30 @@ const GLdouble near = 3.0;
 const GLdouble far = 7.0;
 
 
-// kąty obrotu
-
-
-GLfloat rotatex = 270.0;
-
-GLfloat rotatez = 0.0;
-
-
-// wskaŸnik naciśnięcia lewego przycisku myszki
-
-
-int button_state = GLUT_UP;
-
-
-// położenie kursora myszki
-
-
-int button_x, button_y;
-
-
 // współczynnik skalowania
 
 
-GLfloat scale = 1.5;
+GLfloat scale = 1.05;
 
 
-// identyfikatory tekstur
+// identyfikatory list wyświetlania
 
 
-GLuint VENUS, EARTH, MARS;
+GLint RECT_LIST;
+
+GLint TEXTURE_256_LIST, TEXTURE_128_LIST, TEXTURE_64_LIST;
 
 
-// identyfikator bieżącej tekstury
+// filtr powiększający
 
 
-GLuint texture;
+GLint mag_filter = GL_NEAREST;
 
 
 // filtr pomniejszający
 
 
-GLint min_filter = GL_LINEAR_MIPMAP_LINEAR;
-
-
-// funkcja rysująca napis w wybranym miejscu
-
-// (wersja korzystająca z funkcji glWindowPos2i)
-
-
-void DrawString(GLint x, GLint y, char *string)
-
-{
-
-	// położenie napisu
-
-	glWindowPos2i(x, y);
-
-
-	// wyświetlenie napisu
-
-	int len = strlen(string);
-
-	for (int i = 0; i < len; i++)
-
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
-
-}
+GLint min_filter = GL_NEAREST;
 
 
 // funkcja generująca scenę 3D
@@ -193,9 +105,9 @@ void DisplayScene()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
 
-	// czyszczenie bufora koloru i bufora głębokości
+	// czyszczenie bufora koloru
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 
 	// wybór macierzy modelowania
@@ -208,140 +120,53 @@ void DisplayScene()
 	glLoadIdentity();
 
 
-	// przesunięcie układu współrzędnych obiektów do środka bryły odcinania
+	// przesunięcie układu współrzędnych obiektów do śodka bryły odcinania
 
-	glTranslatef(0.0, 0.0, -(near + far) / 2);
-
-
-	// obroty obiektu
-
-	glRotatef(rotatex, 1.0, 0.0, 0.0);
-
-	glRotatef(rotatez, 0.0, 0.0, 1.0);
+	glTranslatef(0, 0, -(near + far) / 2);
 
 
 	// skalowanie obiektu - klawisze "+" i "-"
 
-	glScalef(scale, scale, scale);
+	glScalef(scale, 1.0, 1.0);
 
 
-	// włączenie testu bufora głębokości
+	// wlaczenie teksturowania jednowymiarowego
 
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_1D);
 
 
-	// włączenie teksturowania dwuwymiarowego
+	// tryb upakowania bajtów danych tekstury
 
-	glEnable(GL_TEXTURE_2D);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 
 	// filtr powiększający
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, mag_filter);
 
 
 	// filtr pomniejszający
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, min_filter);
 
 
-	// dowiązanie wybranej tekstury
+	// usunuięcie błędow przy renderingu brzegu tekstury
 
-	glBindTexture(GL_TEXTURE_2D, texture);
+	if (mag_filter == GL_LINEAR)
 
-
-	// ustawienie parametów środowiska tekstur
-
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
 
-	// utworzenie kwadryki
+	// wyśietlenie tekstur
 
-	GLUquadricObj *quadobj = gluNewQuadric();
+	glCallList(TEXTURE_256_LIST);
 
+	glCallList(TEXTURE_128_LIST);
 
-	// styl (wygląd) generowanej kwadryki
-
-	gluQuadricDrawStyle(quadobj, GLU_FILL);
-
-
-	// sposób generacji wektorów normalnych
-
-	gluQuadricNormals(quadobj, GLU_SMOOTH);
+	glCallList(TEXTURE_64_LIST);
 
 
-	// nałożenie tekstury na kwadrykę
-
-	gluQuadricTexture(quadobj, GL_TRUE);
-
-
-	// narysowanie kuli
-
-	gluSphere(quadobj, 1.0, 30, 30);
-
-
-	// usunięcie kwadryki
-
-	gluDeleteQuadric(quadobj);
-
-
-	// wyłączenie teksturowania dwuwymiarowego
-
-	glDisable(GL_TEXTURE_2D);
-
-
-	// informacje o wybranych parametrach bieżącej tekstury
-
-	char string[200];
-
-	GLfloat var;
-
-	glColor3fv(Black);
-
-
-	// wartość priorytetu tekstury
-
-	glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, &var);
-
-	sprintf(string, "GL_TEXTURE_PRIORITY = %f", var);
-
-	DrawString(2, 2, string);
-
-
-	// czy tekstura jest rezydentna
-
-	glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &var);
-
-	if (var == GL_FALSE)
-
-		strcpy(string, "GL_TEXTURE_RESIDENT = GL_FALSE");
-
-	else
-
-		strcpy(string, "GL_TEXTURE_RESIDENT = GL_TRUE");
-
-	DrawString(2, 16, string);
-
-
-	// szerokość tekstury (poziom 0)
-
-	glGetTexLevelParameterfv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &var);
-
-	sprintf(string, "GL_TEXTURE_WIDTH = %f", var);
-
-	DrawString(2, 30, string);
-
-
-	// wysokość tekstury (poziom 0)
-
-	glGetTexLevelParameterfv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &var);
-
-	sprintf(string, "GL_TEXTURE_HEIGHT = %f", var);
-
-	DrawString(2, 46, string);
-
-
-	// skierowanie poleceñ do wykonania
+	// skierowanie polecen do wykonania
 
 	glFlush();
 
@@ -353,7 +178,7 @@ void DisplayScene()
 }
 
 
-// zmiana wielkości okna
+// zmiana wielkośi okna
 
 
 void Reshape(int width, int height)
@@ -381,7 +206,7 @@ void Reshape(int width, int height)
 
 	{
 
-		// wysokość okna większa od wysokości okna
+		// wysoko okna większa od wysokoi okna
 
 		if (width < height && width > 0)
 
@@ -390,7 +215,7 @@ void Reshape(int width, int height)
 		else
 
 
-			// szerokość okna większa lub równa wysokości okna
+			// szeroko okna większa lub równa wysokoi okna
 
 			if (width >= height && height > 0)
 
@@ -440,65 +265,6 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 
-// obsługa przycisków myszki
-
-
-void MouseButton(int button, int state, int x, int y)
-
-{
-
-	if (button == GLUT_LEFT_BUTTON)
-
-	{
-
-		// zapamiętanie stanu lewego przycisku myszki
-
-		button_state = state;
-
-
-		// zapamiętanie położenia kursora myszki
-
-		if (state == GLUT_DOWN)
-
-		{
-
-			button_x = x;
-
-			button_y = y;
-
-		}
-
-	}
-
-}
-
-
-// obsługa ruchu kursora myszki
-
-
-void MouseMotion(int x, int y)
-
-{
-
-	if (button_state == GLUT_DOWN)
-
-	{
-
-		rotatez += 30 * (right - left) / glutGet(GLUT_WINDOW_WIDTH) * (x - button_x);
-
-		button_x = x;
-
-		rotatex -= 30 * (top - bottom) / glutGet(GLUT_WINDOW_HEIGHT) * (button_y - y);
-
-		button_y = y;
-
-		glutPostRedisplay();
-
-	}
-
-}
-
-
 // obsługa menu podręcznego
 
 
@@ -510,57 +276,41 @@ void Menu(int value)
 
 	{
 
-		// Wenus
+		// filtr powiększający: GL_NEAREST/GL_LINEAR
 
-	case VENUS_TEX:
+	case MAG_FILTER:
 
-		texture = VENUS;
+		if (mag_filter == GL_NEAREST)
 
-		DisplayScene();
+			mag_filter = GL_LINEAR;
 
-		break;
+		else
 
-
-		// Ziemia
-
-	case EARTH_TEX:
-
-		texture = EARTH;
+			mag_filter = GL_NEAREST;
 
 		DisplayScene();
 
 		break;
 
 
-		// Mars
+		// filtr pomniejszający: GL_NEAREST/GL_LINEAR
 
-	case MARS_TEX:
+	case MIN_FILTER:
 
-		texture = MARS;
+		if (min_filter == GL_NEAREST)
 
-		DisplayScene();
+			min_filter = GL_LINEAR;
 
-		break;
+		else
 
-
-		// filtr pomniejszający
-
-	case GL_NEAREST_MIPMAP_NEAREST:
-
-	case GL_NEAREST_MIPMAP_LINEAR:
-
-	case GL_LINEAR_MIPMAP_NEAREST:
-
-	case GL_LINEAR_MIPMAP_LINEAR:
-
-		min_filter = value;
+			min_filter = GL_NEAREST;
 
 		DisplayScene();
 
 		break;
 
 
-		// obszar renderingu - całe okno
+		// obszar renderingu - całę okno
 
 	case FULL_WINDOW:
 
@@ -582,7 +332,7 @@ void Menu(int value)
 		break;
 
 
-		// wyjście
+		// wyjie
 
 	case EXIT:
 
@@ -593,155 +343,218 @@ void Menu(int value)
 }
 
 
-// utworzenie tekstur
+// utworzenie list wyietlania
 
 
-void GenerateTextures()
+void GenerateDisplayLists()
 
 {
 
-	// zmienne użyte przy obsłudze plików TARGA
+	// generowanie identyfikatora listy wyietlania
 
-	GLsizei width, height;
-
-	GLenum format, type;
-
-	GLvoid *pixels;
+	RECT_LIST = glGenLists(1);
 
 
-	// tryb upakowania bajtów danych tekstury
+	// lista wyśietlania - prostokąt
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-
-	// wczytanie tekstury Venus utworzonej ze zdjęć sondy Magellan
-
-	// plik: http://maps.jpl.nasa.gov/pix/ven0aaa2.tif
-
-	GLboolean error = load_targa("ven0aaa2.tga", width, height, format, type, pixels);
+	glNewList(RECT_LIST, GL_COMPILE);
 
 
-	// błąd odczytu pliku
+	// nałożenie tekstury na prostokąt
 
-	if (error == GL_FALSE)
+	glBegin(GL_QUADS);
+
+	glTexCoord1f(1.0);
+
+	glVertex2f(1.5, 0.7);
+
+	glTexCoord1f(0.0);
+
+	glVertex2f(-1.5, 0.7);
+
+	glTexCoord1f(0.0);
+
+	glVertex2f(-1.5, -0.7);
+
+	glTexCoord1f(1.0);
+
+	glVertex2f(1.5, -0.7);
+
+	glEnd();
+
+
+	// koniec listy wyietlania
+
+	glEndList();
+
+
+	// sprawdzenie czy implementacja biblioteki obsługuje tekstury o wymiarze 256
+
+	GLint size;
+
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+
+	if (size < 2048)
 
 	{
 
-		printf("Niepoprawny odczyt pliku ven0aaa2.tga");
+		printf("Rozmiar tekstur mniejszy od 256");
 
 		exit(0);
 
 	}
 
 
-	// utworzenie identyfikatora tekstury
+	// dane tekstury
 
-	glGenTextures(1, &VENUS);
-
-
-	// dowiązanie stanu tekstury
-
-	glBindTexture(GL_TEXTURE_2D, VENUS);
+	GLubyte texture[2048 * 3];
 
 
-	// utworzenie tekstury wraz z mipmapami
-
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, format, type, pixels);
-
-
-	// porządki
-
-	delete[](unsigned char*)pixels;
-
-
-	// wczytanie tekstury z hipsometryczną (fizyczną) mapą Ziemi
-
-	// plik: http://maps.jpl.nasa.gov/pix/ear0xuu2.tif
-
-	error = load_targa("ear0xuu2.tga", width, height, format, type, pixels);
-
-
-	// błąd odczytu pliku
-
-	if (error == GL_FALSE)
+	// przygotowanie danych tekstury RGB
+	int n = 9; 
+	for (int i = 0; i < 2048; i++)
 
 	{
 
-		printf("Niepoprawny odczyt pliku ear0xuu2.tga");
+		texture[3 * i + 0] = i;
 
-		exit(0);
+		texture[3 * i + 1] = i;
+
+		texture[3 * i + 2] = i;
 
 	}
 
 
-	// utworzenie identyfikatora tekstury
+	// generowanie identyfikatora listy wyietlania
 
-	glGenTextures(1, &EARTH);
-
-
-	// dowiązanie stanu tekstury
-
-	glBindTexture(GL_TEXTURE_2D, EARTH);
+	TEXTURE_256_LIST = glGenLists(1);
 
 
-	// utworzenie tekstury wraz z mipmapami
+	// lista wyietlania - tekstura o szerokoi 256 tekseli
 
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, format, type, pixels);
-
-
-	// porządki
-
-	delete[](unsigned char*)pixels;
+	glNewList(TEXTURE_256_LIST, GL_COMPILE);
 
 
-	// wczytanie tekstury Marsa utworzonej ze zdjęć sond Viking
+	// definiowanie tekstury
 
-	// plik: http://maps.jpl.nasa.gov/pix/mar0kuu2.tif
-
-	error = load_targa("mar0kuu2.tga", width, height, format, type, pixels);
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, 2048, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
 
 
-	// błąd odczytu pliku
+	// odłożenie macierzy modelowania na stos
 
-	if (error == GL_FALSE)
+	glPushMatrix();
+
+
+	// przesunięcie prostokąta do góry o dwie jednostki
+
+	glTranslatef(0.0, 2.0, 0.0);
+
+
+	// nałożenie tekstury na prostokąt
+
+	glCallList(RECT_LIST);
+
+
+	// zdjęcie macierzy modelowania ze stosu
+
+	glPopMatrix();
+
+
+	// koniec listy wyietlania
+
+	glEndList();
+
+
+	//  przygotowanie danych tekstury LUMINANCE
+
+	for (int i = 0; i < 1024; i++)
 
 	{
 
-		printf("Niepoprawny odczyt pliku mar0kuu2.tga");
-
-		exit(0);
+		texture[i] = i * 2;
 
 	}
 
 
-	// utworzenie identyfikatora tekstury
+	// generowanie identyfikatora listy wyietlania
 
-	glGenTextures(1, &MARS);
-
-
-	// dowiązanie stanu tekstury
-
-	glBindTexture(GL_TEXTURE_2D, MARS);
+	TEXTURE_128_LIST = glGenLists(1);
 
 
-	// utworzenie tekstury wraz z mipmapami
+	// lista wyietlania - tekstura o szerokoi 128 tekseli
 
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, format, type, pixels);
-
-
-	// porządki
-
-	delete[](unsigned char*)pixels;
+	glNewList(TEXTURE_128_LIST, GL_COMPILE);
 
 
-	// identyfikator bieżącej tekstury
+	// definiowanie tekstury
 
-	texture = EARTH;
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_LUMINANCE, 1024, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, texture);
+
+
+	// nałożenie tekstury na prostokąt
+
+	glCallList(RECT_LIST);
+
+
+	// koniec listy wyietlania
+
+	glEndList();
+
+
+	// przygotowanie danych tekstury INTENSITY
+
+	for (int i = 0; i < 512; i++)
+
+	{
+
+		texture[3 * i] = i * 4;
+
+	}
+
+
+	// generowanie identyfikatora listy wyietlania
+
+	TEXTURE_64_LIST = glGenLists(1);
+
+
+	// lista wyietlania - tekstura o szerokoi 64 tekseli
+
+	glNewList(TEXTURE_64_LIST, GL_COMPILE);
+
+
+	// definiowanie tekstury
+
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_INTENSITY, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
+
+
+	// odłożenie macierzy modelowania na stos
+
+	glPushMatrix();
+
+
+	// przesunięcie prostokąta do dołu o dwie jednostki
+
+	glTranslatef(0.0, -2.0, 0.0);
+
+
+	// nałożenie tekstury na prostokąt
+
+	glCallList(RECT_LIST);
+
+
+	// zdjęcie macierzy modelowania ze stosu
+
+	glPopMatrix();
+
+
+	// koniec listy wyietlania
+
+	glEndList();
 
 }
 
 
-// sprawdzenie i przygotowanie obsługi wybranych rozszerzeñ
+// sprawdzenie i przygotowanie obsługi wybranych rozszerzen
 
 
 void ExtensionSetup()
@@ -757,7 +570,7 @@ void ExtensionSetup()
 
 	int major = 0, minor = 0;
 
-	if (sscanf(version, "%d.%d", &major, &minor) != 2)
+	if (sscanf_s(version, "%d.%d", &major, &minor) != 2)
 
 	{
 
@@ -778,43 +591,21 @@ void ExtensionSetup()
 	}
 
 
-	// sprawdzenie czy jest co najmniej wersja 1.4
+	// sprawdzenie czy jest co najmniej wersja 1.2 OpenGL lub
 
-	if (major > 1 || minor >= 4)
+	// czy jest obsługiwane rozszerzenie GL_SGIS_texture_edge_clamp
+
+	if (!(major > 1 || minor >= 2) &&
+
+		!glutExtensionSupported("GL_SGIS_texture_edge_clamp"))
 
 	{
 
-		// pobranie wskaŸnika wybranej funkcji OpenGL 1.4
+		printf("Brak rozszerzenia GL_SGIS_texture_edge_clamp!\n");
 
-		glWindowPos2i = (PFNGLWINDOWPOS2IPROC)wglGetProcAddress("glWindowPos2i");
+		exit(0);
 
 	}
-
-	else
-
-		// sprawdzenie czy jest obsługiwane rozszerzenie ARB_window_pos
-
-		if (glutExtensionSupported("GL_ARB_window_pos"))
-
-		{
-
-			// pobranie wskaŸnika wybranej funkcji rozszerzenia ARB_window_pos
-
-			glWindowPos2i = (PFNGLWINDOWPOS2IPROC)wglGetProcAddress
-
-			("glWindowPos2iARB");
-
-		}
-
-		else
-
-		{
-
-			printf("Brak rozszerzenia ARB_window_pos!\n");
-
-			exit(0);
-
-		}
 
 }
 
@@ -830,7 +621,7 @@ int main(int argc, char *argv[])
 
 	// inicjalizacja bufora ramki
 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 
 
 	// rozmiary głównego okna programu
@@ -840,7 +631,7 @@ int main(int argc, char *argv[])
 
 	// utworzenie głównego okna programu
 
-	glutCreateWindow("Tekstura 2D");
+	glutCreateWindow("Tekstura 1D");
 
 
 	// dołączenie funkcji generującej scenę 3D
@@ -856,40 +647,6 @@ int main(int argc, char *argv[])
 	// dołączenie funkcji obsługi klawiatury
 
 	glutKeyboardFunc(Keyboard);
-
-
-	// obsługa przycisków myszki
-
-	glutMouseFunc(MouseButton);
-
-
-	// obsługa ruchu kursora myszki
-
-	glutMotionFunc(MouseMotion);
-
-
-	// utworzenie podmenu - Planeta
-
-	int MenuPlanet = glutCreateMenu(Menu);
-
-	glutAddMenuEntry("Wenus", VENUS_TEX);
-
-	glutAddMenuEntry("Ziemia", EARTH_TEX);
-
-	glutAddMenuEntry("Mars", MARS_TEX);
-
-
-	// utworzenie podmenu - Filtr pomniejszający
-
-	int MenuMinFilter = glutCreateMenu(Menu);
-
-	glutAddMenuEntry("GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST);
-
-	glutAddMenuEntry("GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR);
-
-	glutAddMenuEntry("GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST);
-
-	glutAddMenuEntry("GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR);
 
 
 	// utworzenie podmenu - Aspekt obrazu
@@ -916,22 +673,24 @@ int main(int argc, char *argv[])
 
 	glutCreateMenu(Menu);
 
-	glutAddSubMenu("Planeta", MenuPlanet);
-
 
 #ifdef WIN32
 
 
-	glutAddSubMenu("Filtr pomniejszający", MenuMinFilter);
+	glutAddMenuEntry("Filtr powiększający: GL_NEAREST/GL_LINEAR", MAG_FILTER);
+
+	glutAddMenuEntry("Filtr pomniejszający: GL_NEAREST/GL_LINEAR", MIN_FILTER);
 
 	glutAddSubMenu("Aspekt obrazu", MenuAspect);
 
-	glutAddMenuEntry("Wyjście", EXIT);
+	glutAddMenuEntry("Wyjie", EXIT);
 
 #else
 
 
-	glutAddSubMenu("Filtr pomniejszajacy", MenuMinFilter);
+	glutAddMenuEntry("Filtr powiekszajacy: GL_NEAREST/GL_LINEAR", MAG_FILTER);
+
+	glutAddMenuEntry("Filtr pomniejszajacy: GL_NEAREST/GL_LINEAR", MIN_FILTER);
 
 	glutAddSubMenu("Aspekt obrazu", MenuAspect);
 
@@ -940,26 +699,24 @@ int main(int argc, char *argv[])
 #endif
 
 
-	// określenie przycisku myszki obsługującego menu podręczne
+	// okreenie przycisku myszki obsługującego menu podręczne
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 
-	// utworzenie tekstur
+	// utworzenie list wyietlania
 
-	GenerateTextures();
+	GenerateDisplayLists();
 
 
-	// sprawdzenie i przygotowanie obsługi wybranych rozszerzeñ
+	// sprawdzenie i przygotowanie obsługi wybranych rozszerzen
 
 	ExtensionSetup();
 
 
-	// wprowadzenie programu do obsługi pętli komunikatów
+	// wprowadzenie programu do obsługi poli komunikatów
 
 	glutMainLoop();
 
 	return 0;
-
 }
-
