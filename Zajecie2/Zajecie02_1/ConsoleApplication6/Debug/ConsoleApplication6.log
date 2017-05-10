@@ -1,7 +1,2 @@
-﻿  stdafx.cpp
-  ConsoleApplication6.cpp
-c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie2\zajecie02_1\consoleapplication6\consoleapplication6.cpp(90): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\admin\desktop\repozytorium\grafika-komputerowa\zajecie2\zajecie02_1\consoleapplication6\consoleapplication6.cpp(92): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-  LINK : C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_1\Debug\ConsoleApplication6.exe not found or not built by the last incremental link; performing full link
-  ConsoleApplication6.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_1\Debug\ConsoleApplication6.exe
+﻿  ConsoleApplication6.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_1\Debug\ConsoleApplication6.exe
   ConsoleApplication6.vcxproj -> C:\Users\Admin\Desktop\Repozytorium\Grafika-Komputerowa\Zajecie2\Zajecie02_1\Debug\ConsoleApplication6.pdb (Full PDB)

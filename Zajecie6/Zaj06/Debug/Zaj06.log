@@ -1,0 +1,7 @@
+﻿  Source.cpp
+c:\users\admin\documents\visual studio 2015\projects\zaj06\zaj06\source.cpp(527): warning C4305: '+=': truncation from 'double' to 'GLfloat'
+c:\users\admin\documents\visual studio 2015\projects\zaj06\zaj06\source.cpp(532): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+c:\users\admin\documents\visual studio 2015\projects\zaj06\zaj06\source.cpp(593): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\admin\documents\visual studio 2015\projects\zaj06\zaj06\source.cpp(595): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+  Zaj06.vcxproj -> C:\Users\Admin\Documents\Visual Studio 2015\Projects\Zaj06\Debug\Zaj06.exe
+  Zaj06.vcxproj -> C:\Users\Admin\Documents\Visual Studio 2015\Projects\Zaj06\Debug\Zaj06.pdb (Partial PDB)
